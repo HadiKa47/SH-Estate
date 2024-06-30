@@ -5,6 +5,7 @@ import Layout from "./routes/layout/layout";
 import SinglePage from "./routes/singlePage/singlePage";
 import Login from "./routes/login/login";
 import ProfilePage from "./routes/profilePage/profilePage";
+import Register from "./routes/register/register";
 
 function App() {
   const router = createBrowserRouter([
@@ -25,12 +26,16 @@ function App() {
           element: <SinglePage />,
         },
         {
-          path:"/profile",
-          element:<ProfilePage/>
+          path: "/profile",
+          element: <ProfilePage />,
         },
         {
           path: "/login",
           element: <Login />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
         },
       ],
     },
