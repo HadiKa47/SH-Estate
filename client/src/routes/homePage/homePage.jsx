@@ -3,9 +3,9 @@ import SearchBar from "../../components/searchBar/SearchBar";
 import "./homePage.scss";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function HomePage() {
+function HomePage() {
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
+
   return (
     <div className="homePage">
       <div className="textContainer">
@@ -41,8 +41,10 @@ export default function HomePage() {
         </div>
       </div>
       <div className="imgContainer">
-        <img src="/bg.png" alt="background-image" />
+        <img src="/bg.png" alt="" />
       </div>
     </div>
   );
 }
+
+export default HomePage;

@@ -17,11 +17,11 @@ function Login() {
     setError("");
 
     const formData = new FormData(e.target);
-    const email = formData.get("email");
+    const username = formData.get("username");
     const password = formData.get("password");
     try {
       const res = await apiRequest.post("/auth/login", {
-        email,
+        username,
         password,
       });
 
@@ -39,7 +39,12 @@ function Login() {
       <div className="formContainer">
         <form onSubmit={handleSubmit}>
           <h1>Welcome back</h1>
-          <input name="email" type="email" placeholder="Email" required />
+          <input
+            name="username"
+            type="username"
+            placeholder="Username"
+            required
+          />
           <input
             name="password"
             type="password"

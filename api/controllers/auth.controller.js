@@ -4,6 +4,7 @@ import prisma from "../lib/prisma.js";
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
+
   try {
     // Password validation checks
     if (!password) {
@@ -90,10 +91,12 @@ export const register = async (req, res) => {
     }
 
     // HASH THE PASSWORD
+
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(hashedPassword);
 
     // CREATE A NEW USER AND SAVE TO DB
+
     const newUser = await prisma.user.create({
       data: {
         username,
@@ -101,6 +104,7 @@ export const register = async (req, res) => {
         password: hashedPassword,
       },
     });
+
     console.log(newUser);
     res.status(201).json({ message: "User created successfully" });
   } catch (err) {
@@ -110,24 +114,27 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
+
   try {
-    // Check if user already exists
+    // CHECK IF THE USER EXISTS
 
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { username },
     });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials..!" });
-    }
 
-    // Check if the password is correct
+    if (!user) return res.status(400).json({ message: "Invalid Credentials!" });
+
+    // CHECK IF THE PASSWORD IS CORRECT
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials..!" });
-    }
 
-    // Generate cookie Token and send it to the user
+    if (!isPasswordValid)
+      return res.status(400).json({ message: "Invalid Credentials!" });
+
+    // GENERATE COOKIE TOKEN AND SEND TO THE USER
+
+    // res.setHeader("Set-Cookie", "test=" + "myValue").json("success")
     const age = 1000 * 60 * 60 * 24 * 7;
 
     const token = jwt.sign(
@@ -148,15 +155,13 @@ export const login = async (req, res) => {
         maxAge: age,
       })
       .status(200)
-      .json({ userInfo });
+      .json(userInfo);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to login..!!" });
+    res.status(500).json({ message: "Failed to login!" });
   }
 };
+
 export const logout = (req, res) => {
-  res
-    .clearCookie("token")
-    .status(200)
-    .json({ message: "Logout successfully..!" });
+  res.clearCookie("token").status(200).json({ message: "Logout Successful" });
 };
