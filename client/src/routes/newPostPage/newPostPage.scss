@@ -5,6 +5,7 @@
   .formContainer {
     flex: 3;
     overflow: scroll;
+    scrollbar-width: none;
 
     .wrapper {
       margin: 30px 50px 100px 0px;

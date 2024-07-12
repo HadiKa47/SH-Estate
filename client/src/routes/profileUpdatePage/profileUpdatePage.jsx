@@ -72,7 +72,7 @@ function ProfileUpdatePage() {
         />
         <UploadWidget
           uwConfig={{
-            cloudName: "dsjsjdodg",
+            cloudName: "hadialk",
             uploadPreset: "SH-Estate",
             multiple: false,
             maxImageFileSize: 2000000,
