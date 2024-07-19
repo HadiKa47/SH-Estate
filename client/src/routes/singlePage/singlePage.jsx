@@ -1,12 +1,59 @@
 import "./singlePage.scss";
 import Slider from "../../components/slider/Slider";
 import Map from "../../components/map/Map";
+import { useNavigate, useLoaderData } from "react-router-dom";
 import DOMPurify from "dompurify";
-import { useLoaderData } from "react-router-dom";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import apiRequest from "../../lib/apiRequest";
 
 function SinglePage() {
   const post = useLoaderData();
-  console.log(post);
+  const [saved, setSaved] = useState(post.isSaved);
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleSave = async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+    setSaved((prev) => !prev);
+    try {
+      await apiRequest.post("/users/save", { postId: post.id });
+    } catch (err) {
+      console.log(err);
+      setSaved((prev) => !prev);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!currentUser) {
+      navigate("/login");
+    } else {
+      try {
+        navigate(`/profile`, { state: { receiverId: post.user.id } });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await apiRequest.delete(`/posts/${post.id}`);
+      navigate("/"); // Navigate to the home page or wherever you want after deletion
+    } catch (err) {
+      console.log(err);
+      alert("Failed to delete the post.");
+    }
+  };
+
   return (
     <div className="singlePage">
       <div className="details">
@@ -119,14 +166,28 @@ function SinglePage() {
             <Map items={[post]} />
           </div>
           <div className="buttons">
-            <button>
+            <button onClick={handleSendMessage}>
               <img src="/chat.png" alt="" />
               Send a Message
             </button>
-            <button>
+            {/* <button
+              onClick={handleSave}
+              style={{
+                backgroundColor: saved ? "#fece51" : "white",
+              }}
+            >
               <img src="/save.png" alt="" />
-              Save the Place
-            </button>
+              {saved ? "Place Saved" : "Save the Place"}
+            </button> */}
+            {currentUser?.id === post.userId && (
+              <button
+                onClick={handleDelete}
+                style={{ backgroundColor: "#ff4d4d", color: "black" }}
+              >
+                <img src="/delete.png" alt="" />
+                Delete Post
+              </button>
+            )}
           </div>
         </div>
       </div>
