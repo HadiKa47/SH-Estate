@@ -13,7 +13,7 @@ export const getChats = async (req, res) => {
       include: {
         messages: {
           orderBy: {
-            createdAt: "asc",
+            createdAt: "desc",
           },
           take: 1, // Fetch the last message only
         },

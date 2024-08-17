@@ -3,29 +3,29 @@ import Slider from "../../components/slider/Slider";
 import Map from "../../components/map/Map";
 import { useNavigate, useLoaderData } from "react-router-dom";
 import DOMPurify from "dompurify";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
 
 function SinglePage() {
   const post = useLoaderData();
-  const [saved, setSaved] = useState(post.isSaved);
+  // const [saved, setSaved] = useState(post.isSaved);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSave = async () => {
-    if (!currentUser) {
-      navigate("/login");
-      return;
-    }
-    setSaved((prev) => !prev);
-    try {
-      await apiRequest.post("/users/save", { postId: post.id });
-    } catch (err) {
-      console.log(err);
-      setSaved((prev) => !prev);
-    }
-  };
+  // const handleSave = async () => {
+  //   if (!currentUser) {
+  //     navigate("/login");
+  //     return;
+  //   }
+  //   setSaved((prev) => !prev);
+  //   try {
+  //     await apiRequest.post("/users/save", { postId: post.id });
+  //   } catch (err) {
+  //     console.log(err);
+  //     setSaved((prev) => !prev);
+  //   }
+  // };
 
   const handleSendMessage = async () => {
     if (!currentUser) {
@@ -37,6 +37,10 @@ function SinglePage() {
         console.log(err);
       }
     }
+  };
+
+  const handleEditPost = () => {
+    navigate(`/edit-post/${post.id}`);
   };
 
   const handleDelete = async () => {
@@ -166,19 +170,17 @@ function SinglePage() {
             <Map items={[post]} />
           </div>
           <div className="buttons">
-            <button onClick={handleSendMessage}>
-              <img src="/chat.png" alt="" />
-              Send a Message
-            </button>
-            {/* <button
-              onClick={handleSave}
-              style={{
-                backgroundColor: saved ? "#fece51" : "white",
-              }}
-            >
-              <img src="/save.png" alt="" />
-              {saved ? "Place Saved" : "Save the Place"}
-            </button> */}
+            {currentUser?.id === post.userId ? (
+              <button onClick={handleEditPost}>
+                <img src="/edit.png" alt="" />
+                Edit Post
+              </button>
+            ) : (
+              <button onClick={handleSendMessage}>
+                <img src="/chat.png" alt="" />
+                Send a Message
+              </button>
+            )}
             {currentUser?.id === post.userId && (
               <button
                 onClick={handleDelete}

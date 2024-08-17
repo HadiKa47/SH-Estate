@@ -13,6 +13,7 @@ import {
   profilePageLoader,
   singlePageLoader,
 } from "./lib/loaders";
+import EditPostPage from "./routes/editPostPage/editPostPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -60,6 +61,10 @@ function App() {
         {
           path: "/add",
           element: <NewPostPage />,
+        },
+        {
+          path: "/edit-post/:postId",
+          element: <EditPostPage />,
         },
       ],
     },
